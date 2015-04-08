@@ -1,0 +1,38 @@
+//start the local mysql server:
+$ %MYSQL_HOME%\bin\mysqld.exe --console
+
+//login to the server (password admin, to reset password: $ mysqladmin -u root password "newpwd")
+$ mysql -u root -p
+
+//after login, to create a new database
+$mysql> create database jboss;
+
+//create a new user and password for the jboss db
+$mysql> grant all privileges on publisher.* to publisher@localhost identified by 'publisher';
+
+//quit root login, and use jboss:jboss to login
+$ mysql -u jboss -p
+
+//use the newly created db
+$mysql> use jboss;
+
+//create a table named PROJECT
+drop table PROJECT;
+CREATE TABLE PROJECT (pnumber integer NOT NULL AUTO_INCREMENT, pname VARCHAR(255) DEFAULT NULL, plocation VARCHAR(255)DEFAULT NULL, dept_no integer DEFAULT NULL,
+PRIMARY KEY (pnumber),  index(dept_no));
+
+//confirm the table
+mysql> desc PROJECT;
+/----------------------------------------------------------------------------------------------/
+
++-----------+--------------+------+-----+---------+----------------+
+| Field     | Type         | Null | Key | Default | Extra          |
++-----------+--------------+------+-----+---------+----------------+
+| pnumber   | int(11)      | NO   | PRI | NULL    | auto_increment |
+| pname     | varchar(255) | YES  |     | NULL    |                |
+| plocation | varchar(255) | YES  |     | NULL    |                |
+| dept_no   | int(11)      | YES  | MUL | NULL    |                |
++-----------+--------------+------+-----+---------+----------------+
+4 rows in set (0.02 sec)
+
+/----------------------------------------------------------------------------------------------/

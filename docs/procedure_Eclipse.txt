@@ -1,0 +1,64 @@
+/**Client to JBoss bean communication processes
+1. Client sets properties to locate JBoss ->JNDI Service Provider;
+2. JNDI Service Provider returns Context Object ->Client
+3. Client looks up a specific bean name (context.lookup(name)) ->JNDI Service Provider
+4. JNDI Service Provider returns reference to bean interface (e.g IProject) ->Client
+5. Client call business methods on bean (bean.saveProject(project)) ->JNDI Service Provider
+*/
+1. Right click on Project Explorer -> New -> EJB Project
+	>> {"Target runtime":"JBoss 6.x Runtime", "EJB module version":"3.0"} >> check "create a project deployment descriptor" >> Finish
+
+//Create JPA entity	
+2. Right click on ejbModule -> New -> Class
+	>> {"Java package name":"com.imarchuang.entities","Class name":"Project"} >> Finish
+//Note that there is no @Table annotation. This is possible because the persistence provider will use the default rules to calculate the values for you. The name attribute in @Entity annotation defines the table name. Similarly if an instance variable name matches the column name in the table then there is no need to specify the @Column annotation.
+
+//Creating Session Bean and Bean Interface
+3. Right click on ejbModule -> New -> Session Bean (EJB 3.x)
+	>>{"Java package name":"com.imarchuang.businesslogic", "Class name":"ProjectBean"} >> {"State type":"Stateless"} >>
+		Check the Remote Business Interface and enter the name as com.imarchuang.business.IProject >> Finish
+
+4. Deploy the project
+	4.1 Right click on the EJB project -> Run As -> Run On Server. Select the existing “JBoss 6.x Runtime Server” and click Finish.
+	4.2 Right click on “JBoss 6.x Runtime Server” available in Servers view -> Add and Remove… -> Select the EJB JAR file from the left pane and click Add-> and then Finish.
+
+// add the persistence.xml	
+5. Right click on META-INF folder -> New -> Other -> XML -> XML file. Enter the file name as persistence.xml
+
+// Configuring datasource in JBoss
+The data source configuration should be defined in a file with a suffix of *-ds.xml.
+This file can be deployed either in:
+
+(a)JBossAS_HOME/server/default/deploy directory. If this is used then any application deployed in this application server can use this configuration file, i.e.) one time deployment.
+(b)Your EJB project’s META-INF directory. If this is used then you have to do this in every project which uses MySQL datasource.
+6. Right click on META-INF folder -> New -> Other -> XML -> XML file. Enter the file name as “mysql-ds.xml”
+
+//Adding MySQL Connector J JAR file:
+As we did for mysql-ds.xml file, this JAR file can be deployed either in,
+7.1 JBossAS_HOME/server/default/lib or JBossAS_HOME/server/default/deploy folder so that any application deployed on this server can use this JAR file.
+7.2 Project’s build path. Right click on your EJB Project->Properties, select Java Build Path from left side pane and select Libraries from right side and click on ‘Add External JARs’ and select the mysql-connector-java-5.1.18-bin.jar from your system)
+
+8. Restart the JBoss6.x server
+/-------------------------------------------------------------------------------------------------------------/
+01:40:58,699 INFO  [org.hibernate.impl.SessionFactoryObjectFactory] Factory name: persistence.unit:unitName=HelloWorldJPA.jar#JPADB
+01:40:58,699 INFO  [org.hibernate.util.NamingHelper] JNDI InitialContext properties:{java.naming.factory.initial=org.jnp.interfaces.NamingContextFactory, java.naming.factory.url.pkgs=org.jboss.naming:org.jnp.interfaces}
+01:40:58,703 INFO  [org.hibernate.impl.SessionFactoryObjectFactory] Bound factory to JNDI name: persistence.unit:unitName=HelloWorldJPA.jar#JPADB
+01:40:58,703 INFO  [org.hibernate.util.NamingHelper] JNDI InitialContext properties:{java.naming.factory.initial=org.jnp.interfaces.NamingContextFactory, java.naming.factory.url.pkgs=org.jboss.naming:org.jnp.interfaces}
+01:40:58,709 INFO  [org.jboss.ejb3.session.SessionSpecContainer] Starting jboss.j2ee:jar=HelloWorldJPA.jar,name=ProjectBean,service=EJB3
+01:40:58,731 INFO  [org.jboss.ejb3.EJBContainer] STARTED EJB: com.imarchuang.businesslogic.ProjectBean ejbName: ProjectBean
+01:40:58,792 INFO  [org.jboss.ejb3.proxy.impl.jndiregistrar.JndiSessionRegistrarBase] Binding the following Entries in Global JNDI:
+
+	ProjectBean/remote - EJB3.x Default Remote Business Interface
+	ProjectBean/remote-com.imarchuang.business.IProject - EJB3.x Remote Business Interface
+/-------------------------------------------------------------------------------------------------------------/
+
+//Creating Client
+9. The next step is to write a remote Java client application (with main()) for accessing and invoking the EJBs deployed on the server
+Client uses JNDI to lookup for a proxy of your bean and invokes method on that proxy.
+	9.1 Creating JNDI InitialContext
+	Right click on ejbModule -> New -> Class
+		>> {"package name":"com.imarchuang.clientutility","Class name":"JNDILookupClass"} >> Finish
+		
+	9.2 Creating Client
+	Right click on ejbModule -> New -> Class
+		>> {"package name":"com.imarchuang.client","Class name":"EJBApplicationClient"} >> Finish
