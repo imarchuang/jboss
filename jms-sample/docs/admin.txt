@@ -1,0 +1,24 @@
+Add an application user:
+open a command prompt and type the following command:
+    For Linux:   EAP_HOME/bin/add-user.sh -a -u 'quickstartUser' -p 'quickstartPwd1!' -g 'guest'
+    For Windows: EAP_HOME\bin\add-user.bat  -a -u 'quickstartUser' -p 'quickstartPwd1!' -g 'guest'
+	
+Or:
+1. For Linux:   EAP_HOME/bin/add-user.sh
+For Windows: EAP_HOME\bin\add-user.bat
+
+2. What type of user do you wish to add? 
+a) Management User (mgmt-users.properties) 
+b) Application User (application-users.properties)
+(a): //type: b
+
+3. Enter the details of the new user to add.
+Using realm 'ApplicationRealm' as discovered from the existing property files.
+Username : //type quickstartUser
+
+4. Enter the the Username and at the next prompt, enter the Password. If the quickstart README specifies a Username and Password, enter them here. Otherwise, use the default Username quickstartUser and Password quickstartPwd1!.
+
+Username : quickstartUser
+Password : quickstartPwd1!
+
+5. At the next prompt, you will be asked "What groups do you want this user to belong to? (Please enter a comma separated list, or leave blank for none)[ ]: ". If the quickstart README specifies the groups to use, enter that here. Otherwise, type the group: guest. 
